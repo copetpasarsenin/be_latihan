@@ -1,0 +1,12 @@
+# Environment variables (JANGAN di-push ke Git!)
+.env
+
+# Binary
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Vendor
+vendor/

@@ -1,0 +1,750 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Dokumentasi Swagger untuk backend be_latihan menggunakan Golang Fiber, GORM, PostgreSQL, dan JWT Bearer Token.",
+        "title": "API be_latihan Praktikum 13",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Praktikum Pemrograman III",
+            "email": "praktikum@example.com"
+        },
+        "version": "1.0"
+    },
+    "host": "127.0.0.1:3000",
+    "basePath": "/",
+    "paths": {
+        "/api/mahasiswa/": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil seluruh data mahasiswa. Endpoint ini hanya dapat diakses oleh admin.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Ambil semua data mahasiswa",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.MahasiswaListSuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Token tidak dikirim atau tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.UnauthorizedResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "User tidak memiliki akses admin",
+                        "schema": {
+                            "$ref": "#/definitions/model.ForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menambahkan data mahasiswa baru. Endpoint ini hanya dapat diakses oleh admin.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Tambah data mahasiswa",
+                "parameters": [
+                    {
+                        "description": "Data mahasiswa baru",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Mahasiswa"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Berhasil menambahkan data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.MahasiswaCreatedSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Payload tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.BadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Token tidak dikirim atau tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.UnauthorizedResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "User tidak memiliki akses admin",
+                        "schema": {
+                            "$ref": "#/definitions/model.ForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menambahkan data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mahasiswa/{npm}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil satu data mahasiswa berdasarkan NPM. Endpoint ini hanya dapat diakses oleh admin.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Ambil detail mahasiswa berdasarkan NPM",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "NPM mahasiswa",
+                        "name": "npm",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.MahasiswaDetailSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "NPM tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.BadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Token tidak dikirim atau tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.UnauthorizedResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "User tidak memiliki akses admin",
+                        "schema": {
+                            "$ref": "#/definitions/model.ForbiddenResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data mahasiswa tidak ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/model.NotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengambil data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengubah data mahasiswa berdasarkan NPM. Endpoint ini hanya dapat diakses oleh admin.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Ubah data mahasiswa",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "NPM mahasiswa",
+                        "name": "npm",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data mahasiswa yang diperbarui",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Mahasiswa"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengubah data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.MahasiswaUpdatedSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "NPM atau payload tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.BadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Token tidak dikirim atau tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.UnauthorizedResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "User tidak memiliki akses admin",
+                        "schema": {
+                            "$ref": "#/definitions/model.ForbiddenResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data mahasiswa tidak ditemukan",
+                        "schema": {
+                            "$ref": "#/definitions/model.NotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengubah data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menghapus data mahasiswa berdasarkan NPM. Endpoint ini hanya dapat diakses oleh admin.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mahasiswa"
+                ],
+                "summary": "Hapus data mahasiswa",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "NPM mahasiswa",
+                        "name": "npm",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.MahasiswaDeletedSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "NPM tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.BadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Token tidak dikirim atau tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.UnauthorizedResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "User tidak memiliki akses admin",
+                        "schema": {
+                            "$ref": "#/definitions/model.ForbiddenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal menghapus data mahasiswa",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/change-password": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengubah password user yang sedang login menggunakan token JWT.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Ubah password user",
+                "parameters": [
+                    {
+                        "description": "Data perubahan password",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ChangePasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password berhasil diubah",
+                        "schema": {
+                            "$ref": "#/definitions/model.ChangePasswordSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Payload atau konfirmasi password tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.BadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Token tidak valid atau password lama salah",
+                        "schema": {
+                            "$ref": "#/definitions/model.UnauthorizedResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal mengubah password",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Melakukan autentikasi user dan mengembalikan token JWT untuk akses endpoint yang dilindungi.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "Data login user",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Payload tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.BadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Username atau password salah",
+                        "schema": {
+                            "$ref": "#/definitions/model.UnauthorizedResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal memproses login",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Membuat akun user baru untuk mendapatkan akses ke API.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrasi user baru",
+                "parameters": [
+                    {
+                        "description": "Data registrasi user",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Registrasi berhasil",
+                        "schema": {
+                            "$ref": "#/definitions/model.RegisterSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Payload tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.BadRequestResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Username sudah digunakan atau data tidak valid",
+                        "schema": {
+                            "$ref": "#/definitions/model.ConflictResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Gagal membuat hash password",
+                        "schema": {
+                            "$ref": "#/definitions/model.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.AuthRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "password123"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "admin"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "model.AuthUserResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "admin"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "model.BadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "detail error validasi"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "payload tidak valid"
+                }
+            }
+        },
+        "model.ChangePasswordRequest": {
+            "type": "object",
+            "properties": {
+                "confirm_password": {
+                    "type": "string",
+                    "example": "passwordBaru123"
+                },
+                "new_password": {
+                    "type": "string",
+                    "example": "passwordBaru123"
+                },
+                "old_password": {
+                    "type": "string",
+                    "example": "password123"
+                }
+            }
+        },
+        "model.ChangePasswordSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "password berhasil diubah"
+                }
+            }
+        },
+        "model.ConflictResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "duplicate key value violates unique constraint"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "username sudah digunakan atau data tidak valid"
+                }
+            }
+        },
+        "model.ForbiddenResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "user tidak memiliki akses untuk fitur ini"
+                }
+            }
+        },
+        "model.InternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "detail error server"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "terjadi kesalahan pada server"
+                }
+            }
+        },
+        "model.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.AuthUserResponse"
+                }
+            }
+        },
+        "model.LoginSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.LoginResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "login berhasil"
+                }
+            }
+        },
+        "model.Mahasiswa": {
+            "type": "object",
+            "properties": {
+                "alamat": {
+                    "type": "string",
+                    "example": "Bandung"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "ahmad.fauzi@example.com"
+                },
+                "hobi": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "Membaca",
+                        "Menulis"
+                    ]
+                },
+                "nama": {
+                    "type": "string",
+                    "example": "Ahmad Fauzi"
+                },
+                "no_hp": {
+                    "type": "string",
+                    "example": "081234567890"
+                },
+                "npm": {
+                    "type": "string",
+                    "example": "714240047"
+                },
+                "prodi": {
+                    "type": "string",
+                    "example": "Teknik Informatika"
+                }
+            }
+        },
+        "model.MahasiswaCreatedSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Mahasiswa"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "berhasil menambahkan data mahasiswa"
+                }
+            }
+        },
+        "model.MahasiswaDeletedSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "berhasil menghapus data mahasiswa"
+                }
+            }
+        },
+        "model.MahasiswaDetailSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Mahasiswa"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "berhasil mengambil data mahasiswa"
+                }
+            }
+        },
+        "model.MahasiswaListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Mahasiswa"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "berhasil mengambil data mahasiswa"
+                }
+            }
+        },
+        "model.MahasiswaUpdatedSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Mahasiswa"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "berhasil mengubah data mahasiswa"
+                }
+            }
+        },
+        "model.NotFoundResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "data mahasiswa tidak ditemukan"
+                }
+            }
+        },
+        "model.RegisterSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.AuthUserResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "register berhasil"
+                }
+            }
+        },
+        "model.UnauthorizedResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "authorization header wajib diisi"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Masukkan token dengan format: Bearer {token}",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

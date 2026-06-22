@@ -1,0 +1,15 @@
+package model
+
+import "github.com/lib/pq"
+
+type Mahasiswa struct {
+	NPM    string         `json:"npm"    gorm:"column:npm;primaryKey;type:varchar(20);not null" example:"714240047"`
+	Nama   string         `json:"nama"   gorm:"column:nama;type:varchar(100);not null" example:"Ahmad Fauzi"`
+	Prodi  string         `json:"prodi"  gorm:"column:prodi;type:varchar(100);not null" example:"Teknik Informatika"`
+	Alamat string         `json:"alamat" gorm:"column:alamat;type:varchar(200)" example:"Bandung"`
+	Email  string         `json:"email"  gorm:"column:email;type:varchar(100)" example:"ahmad.fauzi@example.com"`
+	Hobi   pq.StringArray `json:"hobi"   gorm:"column:hobi;type:text[]" swaggertype:"array,string" example:"Membaca,Menulis"`
+	NoHP   string         `json:"no_hp"  gorm:"column:no_hp;type:varchar(20)" example:"081234567890"`
+}
+
+func (Mahasiswa) TableName() string { return "mahasiswa" }

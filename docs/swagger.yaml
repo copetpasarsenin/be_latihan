@@ -1,0 +1,502 @@
+basePath: /
+definitions:
+  model.AuthRequest:
+    properties:
+      password:
+        example: password123
+        type: string
+      role:
+        example: admin
+        type: string
+      username:
+        example: admin
+        type: string
+    type: object
+  model.AuthUserResponse:
+    properties:
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      role:
+        example: admin
+        type: string
+      username:
+        example: admin
+        type: string
+    type: object
+  model.BadRequestResponse:
+    properties:
+      error:
+        example: detail error validasi
+        type: string
+      message:
+        example: payload tidak valid
+        type: string
+    type: object
+  model.ChangePasswordRequest:
+    properties:
+      confirm_password:
+        example: passwordBaru123
+        type: string
+      new_password:
+        example: passwordBaru123
+        type: string
+      old_password:
+        example: password123
+        type: string
+    type: object
+  model.ChangePasswordSuccessResponse:
+    properties:
+      message:
+        example: password berhasil diubah
+        type: string
+    type: object
+  model.ConflictResponse:
+    properties:
+      error:
+        example: duplicate key value violates unique constraint
+        type: string
+      message:
+        example: username sudah digunakan atau data tidak valid
+        type: string
+    type: object
+  model.ForbiddenResponse:
+    properties:
+      message:
+        example: user tidak memiliki akses untuk fitur ini
+        type: string
+    type: object
+  model.InternalServerErrorResponse:
+    properties:
+      error:
+        example: detail error server
+        type: string
+      message:
+        example: terjadi kesalahan pada server
+        type: string
+    type: object
+  model.LoginResponse:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example
+        type: string
+      user:
+        $ref: '#/definitions/model.AuthUserResponse'
+    type: object
+  model.LoginSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.LoginResponse'
+      message:
+        example: login berhasil
+        type: string
+    type: object
+  model.Mahasiswa:
+    properties:
+      alamat:
+        example: Bandung
+        type: string
+      email:
+        example: ahmad.fauzi@example.com
+        type: string
+      hobi:
+        example:
+        - Membaca
+        - Menulis
+        items:
+          type: string
+        type: array
+      nama:
+        example: Ahmad Fauzi
+        type: string
+      no_hp:
+        example: "081234567890"
+        type: string
+      npm:
+        example: "714240047"
+        type: string
+      prodi:
+        example: Teknik Informatika
+        type: string
+    type: object
+  model.MahasiswaCreatedSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Mahasiswa'
+      message:
+        example: berhasil menambahkan data mahasiswa
+        type: string
+    type: object
+  model.MahasiswaDeletedSuccessResponse:
+    properties:
+      message:
+        example: berhasil menghapus data mahasiswa
+        type: string
+    type: object
+  model.MahasiswaDetailSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Mahasiswa'
+      message:
+        example: berhasil mengambil data mahasiswa
+        type: string
+    type: object
+  model.MahasiswaListSuccessResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Mahasiswa'
+        type: array
+      message:
+        example: berhasil mengambil data mahasiswa
+        type: string
+    type: object
+  model.MahasiswaUpdatedSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Mahasiswa'
+      message:
+        example: berhasil mengubah data mahasiswa
+        type: string
+    type: object
+  model.NotFoundResponse:
+    properties:
+      message:
+        example: data mahasiswa tidak ditemukan
+        type: string
+    type: object
+  model.RegisterSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.AuthUserResponse'
+      message:
+        example: register berhasil
+        type: string
+    type: object
+  model.UnauthorizedResponse:
+    properties:
+      message:
+        example: authorization header wajib diisi
+        type: string
+    type: object
+host: 127.0.0.1:3000
+info:
+  contact:
+    email: praktikum@example.com
+    name: Praktikum Pemrograman III
+  description: Dokumentasi Swagger untuk backend be_latihan menggunakan Golang Fiber,
+    GORM, PostgreSQL, dan JWT Bearer Token.
+  termsOfService: http://swagger.io/terms/
+  title: API be_latihan Praktikum 13
+  version: "1.0"
+paths:
+  /api/mahasiswa/:
+    get:
+      description: Mengambil seluruh data mahasiswa. Endpoint ini hanya dapat diakses
+        oleh admin.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data mahasiswa
+          schema:
+            $ref: '#/definitions/model.MahasiswaListSuccessResponse'
+        "401":
+          description: Token tidak dikirim atau tidak valid
+          schema:
+            $ref: '#/definitions/model.UnauthorizedResponse'
+        "403":
+          description: User tidak memiliki akses admin
+          schema:
+            $ref: '#/definitions/model.ForbiddenResponse'
+        "500":
+          description: Gagal mengambil data mahasiswa
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Ambil semua data mahasiswa
+      tags:
+      - Mahasiswa
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan data mahasiswa baru. Endpoint ini hanya dapat diakses
+        oleh admin.
+      parameters:
+      - description: Data mahasiswa baru
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Mahasiswa'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Berhasil menambahkan data mahasiswa
+          schema:
+            $ref: '#/definitions/model.MahasiswaCreatedSuccessResponse'
+        "400":
+          description: Payload tidak valid
+          schema:
+            $ref: '#/definitions/model.BadRequestResponse'
+        "401":
+          description: Token tidak dikirim atau tidak valid
+          schema:
+            $ref: '#/definitions/model.UnauthorizedResponse'
+        "403":
+          description: User tidak memiliki akses admin
+          schema:
+            $ref: '#/definitions/model.ForbiddenResponse'
+        "500":
+          description: Gagal menambahkan data mahasiswa
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Tambah data mahasiswa
+      tags:
+      - Mahasiswa
+  /api/mahasiswa/{npm}:
+    delete:
+      description: Menghapus data mahasiswa berdasarkan NPM. Endpoint ini hanya dapat
+        diakses oleh admin.
+      parameters:
+      - description: NPM mahasiswa
+        in: path
+        name: npm
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil menghapus data mahasiswa
+          schema:
+            $ref: '#/definitions/model.MahasiswaDeletedSuccessResponse'
+        "400":
+          description: NPM tidak valid
+          schema:
+            $ref: '#/definitions/model.BadRequestResponse'
+        "401":
+          description: Token tidak dikirim atau tidak valid
+          schema:
+            $ref: '#/definitions/model.UnauthorizedResponse'
+        "403":
+          description: User tidak memiliki akses admin
+          schema:
+            $ref: '#/definitions/model.ForbiddenResponse'
+        "500":
+          description: Gagal menghapus data mahasiswa
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Hapus data mahasiswa
+      tags:
+      - Mahasiswa
+    get:
+      description: Mengambil satu data mahasiswa berdasarkan NPM. Endpoint ini hanya
+        dapat diakses oleh admin.
+      parameters:
+      - description: NPM mahasiswa
+        in: path
+        name: npm
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data mahasiswa
+          schema:
+            $ref: '#/definitions/model.MahasiswaDetailSuccessResponse'
+        "400":
+          description: NPM tidak valid
+          schema:
+            $ref: '#/definitions/model.BadRequestResponse'
+        "401":
+          description: Token tidak dikirim atau tidak valid
+          schema:
+            $ref: '#/definitions/model.UnauthorizedResponse'
+        "403":
+          description: User tidak memiliki akses admin
+          schema:
+            $ref: '#/definitions/model.ForbiddenResponse'
+        "404":
+          description: Data mahasiswa tidak ditemukan
+          schema:
+            $ref: '#/definitions/model.NotFoundResponse'
+        "500":
+          description: Gagal mengambil data mahasiswa
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Ambil detail mahasiswa berdasarkan NPM
+      tags:
+      - Mahasiswa
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data mahasiswa berdasarkan NPM. Endpoint ini hanya dapat
+        diakses oleh admin.
+      parameters:
+      - description: NPM mahasiswa
+        in: path
+        name: npm
+        required: true
+        type: string
+      - description: Data mahasiswa yang diperbarui
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Mahasiswa'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengubah data mahasiswa
+          schema:
+            $ref: '#/definitions/model.MahasiswaUpdatedSuccessResponse'
+        "400":
+          description: NPM atau payload tidak valid
+          schema:
+            $ref: '#/definitions/model.BadRequestResponse'
+        "401":
+          description: Token tidak dikirim atau tidak valid
+          schema:
+            $ref: '#/definitions/model.UnauthorizedResponse'
+        "403":
+          description: User tidak memiliki akses admin
+          schema:
+            $ref: '#/definitions/model.ForbiddenResponse'
+        "404":
+          description: Data mahasiswa tidak ditemukan
+          schema:
+            $ref: '#/definitions/model.NotFoundResponse'
+        "500":
+          description: Gagal mengubah data mahasiswa
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Ubah data mahasiswa
+      tags:
+      - Mahasiswa
+  /change-password:
+    put:
+      consumes:
+      - application/json
+      description: Mengubah password user yang sedang login menggunakan token JWT.
+      parameters:
+      - description: Data perubahan password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password berhasil diubah
+          schema:
+            $ref: '#/definitions/model.ChangePasswordSuccessResponse'
+        "400":
+          description: Payload atau konfirmasi password tidak valid
+          schema:
+            $ref: '#/definitions/model.BadRequestResponse'
+        "401":
+          description: Token tidak valid atau password lama salah
+          schema:
+            $ref: '#/definitions/model.UnauthorizedResponse'
+        "500":
+          description: Gagal mengubah password
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Ubah password user
+      tags:
+      - Auth
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Melakukan autentikasi user dan mengembalikan token JWT untuk akses
+        endpoint yang dilindungi.
+      parameters:
+      - description: Data login user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login berhasil
+          schema:
+            $ref: '#/definitions/model.LoginSuccessResponse'
+        "400":
+          description: Payload tidak valid
+          schema:
+            $ref: '#/definitions/model.BadRequestResponse'
+        "401":
+          description: Username atau password salah
+          schema:
+            $ref: '#/definitions/model.UnauthorizedResponse'
+        "500":
+          description: Gagal memproses login
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      summary: Login user
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Membuat akun user baru untuk mendapatkan akses ke API.
+      parameters:
+      - description: Data registrasi user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Registrasi berhasil
+          schema:
+            $ref: '#/definitions/model.RegisterSuccessResponse'
+        "400":
+          description: Payload tidak valid
+          schema:
+            $ref: '#/definitions/model.BadRequestResponse'
+        "409":
+          description: Username sudah digunakan atau data tidak valid
+          schema:
+            $ref: '#/definitions/model.ConflictResponse'
+        "500":
+          description: Gagal membuat hash password
+          schema:
+            $ref: '#/definitions/model.InternalServerErrorResponse'
+      summary: Registrasi user baru
+      tags:
+      - Auth
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    description: 'Masukkan token dengan format: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
