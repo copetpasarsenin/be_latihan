@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"fmt"
 	"be_latihan/config"
 	"be_latihan/model"
+	"fmt"
 )
 
 // Ambil semua data mahasiswa
