@@ -2,7 +2,7 @@ package main
 
 import (
 	"be_latihan/config"
-	_ "be_latihan/docs"
+	docs "be_latihan/docs"
 	"be_latihan/model"
 	"be_latihan/router"
 	"os"
@@ -29,10 +29,20 @@ import (
 func main() {
 	app := fiber.New()
 
-	//swager
+	// Configure Swagger before the /docs route is registered.
 	swaggerHost := os.Getenv("SWAGGER_HOST")
 	if swaggerHost == "" {
+		swaggerHost = os.Getenv("RAILWAY_PUBLIC_DOMAIN")
+	}
+	if swaggerHost == "" {
 		swaggerHost = "127.0.0.1:3000"
+	}
+
+	docs.SwaggerInfo.Host = swaggerHost
+	if swaggerHost == "127.0.0.1:3000" || swaggerHost == "localhost:3000" {
+		docs.SwaggerInfo.Schemes = []string{"http"}
+	} else {
+		docs.SwaggerInfo.Schemes = []string{"https"}
 	}
 
 	app.Use(cors.New(cors.Config{
@@ -47,5 +57,10 @@ func main() {
 	config.GetDB().AutoMigrate(&model.Mahasiswa{}, &model.User{})
 	router.SetupRoutes(app)
 
-	app.Listen(":3000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	app.Listen(":" + port)
 }
