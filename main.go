@@ -28,6 +28,12 @@ import (
 func main() {
 	app := fiber.New()
 
+	//swager
+	swaggerHost := os.Getenv("SWAGGER_HOST")
+	if swaggerHost == "" {
+		swaggerHost = "127.0.0.1:3000"
+	}
+
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: strings.Join(config.GetAllowedOrigins(), ","),
 		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
